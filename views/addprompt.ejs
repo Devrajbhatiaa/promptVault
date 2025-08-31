@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Save Prompt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+   :root {
+  --primary: #2563eb;
+  --primary-hover: #1e4fb7;
+  --bg-gradient: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+  --card-bg: rgba(255, 255, 255, 0.12);
+  --radius: 14px;
+  --text-light: #fff;
+  --text-muted: rgba(255, 255, 255, 0.85);
+  --transition: 0.25s ease;
+  --shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Nav */
+header {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+header h2 {
+  color: var(--text-light);
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+label {
+  color:#1e4fb7;
+}
+.back-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.back-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Layout */
+.container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.form-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 500px;
+  color: var(--text-light);
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+label {
+  
+  margin: 12px 0 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e4fb7;
+}
+
+input[type="text"],
+textarea {
+  padding: 40px;
+  border-radius: var(--radius);
+  border: none;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-light);
+  outline: none;
+  transition: var(--transition);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+input:focus,
+textarea:focus {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 8px rgba(255,255,255,0.4);
+  transform: scale(1.01);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.save-btn {
+  margin-top: 24px;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.save-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.note {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  .form-card {
+    padding: 24px;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+</style>
+</head>
+<body>
+  <header>
+    <h2>PromptSaver</h2>
+    <button class="back-btn" onclick="location.href='/home'">🏠 Home</button>
+  </header>
+
+  <div class="container">
+    <div class="form-card">
+      <h1>💡 Save Your Prompt</h1>
+      <form action="/post" method="POST">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" placeholder="Enter a catchy title..." required><br>
+<br>
+        <label for="content">Prompt:</label><br><br>
+        <textarea id="content" name="content" placeholder="Write your amazing prompt here..." required></textarea>
+
+        <button type="submit" class="save-btn">✨ Save Prompt</button>
+      </form>
+      <p class="note">Your creativity will be stored securely in the database 🚀</p>
+    </div>
+  </div>
+</body>
+</html>

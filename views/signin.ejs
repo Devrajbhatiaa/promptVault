@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: linear-gradient(120deg, #2980b9, #6dd5fa, #ffffff);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .signin-container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            width: 100%;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .signin-container h2 {
+            margin-bottom: 1.5rem;
+            color: #2980b9;
+            font-weight: 600;
+        }
+        .signin-container form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+            width: 100%;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 1rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #b2bec3;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #2980b9;
+            outline: none;
+        }
+        .signin-btn {
+            background: #2980b9;
+            color: #fff;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .signin-btn:hover {
+            background: #2573a6;
+        }
+        .signup-link {
+            margin-top: 1.2rem;
+            font-size: 0.95rem;
+            color: #636e72;
+        }
+        .signup-link a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="signin-container">
+        <h2>Sign In</h2>
+        <form action="/signin" method="POST">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" min="1" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>  
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="signin-btn">sign In</button>
+            <div class="signup-link">
+            Already have an account? <a href="/login">Login Now</a>
+        </form>
+    </div>
+</body>
+</html>

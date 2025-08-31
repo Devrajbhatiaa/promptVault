@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Travel Invoice Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    textarea {
+      resize: none;
+    }
+    .row {
+      display: flex;
+      gap: 15px;
+    }
+    .row .form-group {
+      flex: 1;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      background: #007BFF;
+      color: white;
+      padding: 12px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Travel Invoice Form</h2>
+    <form action="/generateInvoice" method="POST" enctype="multipart/form-data">
+      
+      <!-- Travel Name -->
+      <div class="form-group">
+        <label for="travelName">Travel Agency Name</label>
+        <input type="text" id="travelName" name="travelName" placeholder="Enter your travel agency name" required>
+      </div>
+
+      <!-- Upload Logo -->
+      <div class="form-group">
+        <label for="logo">Upload Logo</label>
+        <input type="file" id="logo" name="logo" accept="image/*">
+      </div>
+
+      <!-- Customer Details -->
+      <div class="row">
+        <div class="form-group">
+          <label for="customerName">Customer Name</label>
+          <input type="text" id="customerName" name="customerName" placeholder="Customer full name" required>
+        </div>
+        <div class="form-group">
+          <label for="contact">Contact Number</label>
+          <input type="text" id="contact" name="contact" placeholder="e.g. +91 9876543210">
+        </div>
+      </div>
+
+      <!-- Trip Details -->
+      <div class="row">
+        <div class="form-group">
+          <label for="pickup">Pickup Location</label>
+          <input type="text" id="pickup" name="pickup" placeholder="Pickup location">
+        </div>
+        <div class="form-group">
+          <label for="drop">Drop Location</label>
+          <input type="text" id="drop" name="drop" placeholder="Drop location">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="date">Travel Date</label>
+          <input type="date" id="date" name="date">
+        </div>
+        <div class="form-group">
+          <label for="time">Pickup Time</label>
+          <input type="time" id="time" name="time">
+        </div>
+      </div>
+
+      <!-- Charges -->
+      <div class="row">
+        <div class="form-group">
+          <label for="baseFare">Base Fare (₹)</label>
+          <input type="number" id="baseFare" name="baseFare">
+        </div>
+        <div class="form-group">
+          <label for="kms">Total Kilometers</label>
+          <input type="number" id="kms" name="kms">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="extraKm">Extra Km Charges (₹)</label>
+          <input type="number" id="extraKm" name="extraKm">
+        </div>
+        <div class="form-group">
+          <label for="nightAllowance">Night Allowance (₹)</label>
+          <input type="number" id="nightAllowance" name="nightAllowance">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="airportCharges">Airport Charges (₹)</label>
+          <input type="number" id="airportCharges" name="airportCharges">
+        </div>
+        <div class="form-group">
+          <label for="otherCharges">Other Extra Charges (₹)</label>
+          <input type="number" id="otherCharges" name="otherCharges">
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="form-group">
+        <label for="notes">Additional Notes</label>
+        <textarea id="notes" name="notes" rows="3" placeholder="Any special instructions"></textarea>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn">Generate Invoice</button>
+    </form>
+  </div>
+</body>
+</html>

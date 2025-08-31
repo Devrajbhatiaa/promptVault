@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include('partials/header') %>
+
+  <title>User Profile</title>
+  <link rel="stylesheet" href="/style.css"> <!-- link to public/style.css -->
+<style>
+  body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(120deg, #89f7fe, #66a6ff);
+  margin: 0;
+  padding: 0;
+}
+
+.profile-container {
+  max-width: 400px;
+  margin: 100px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+}
+
+.profile-card {
+  margin-top: 20px;
+  text-align: left;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.profile-card p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.logout-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 18px;
+  background: #ff4b5c;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #d43f4b;
+}
+
+</style>
+</head>
+<body>
+  <div class="profile-container">
+    <h1>Welcome, <%= user.name %> 🎉</h1>
+
+    <div class="profile-card">
+      <p><strong>Email:</strong> <%= user.email %></p>
+      <p><strong>Username:</strong> <%= user.username %></p>
+      <p><strong>Age:</strong> <%= user.age %></p>
+    </div>
+
+    <a href="/logout" class="logout-btn">Logout</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!-- header.ejs -->
+<header>
+  <div class="navbar">
+    <!-- Title -->
+    <h1 class="logo">Prompt Vault</h1>
+
+    <!-- Navigation -->
+    <nav>
+      <a href="/home">View Prompts</a>
+      <a href="/post" class="add-btn">+ Add Prompt</a>
+
+      <!-- Profile Dropdown -->
+      <div class="dropdown">
+        <button class="profile-btn">Profile ▾</button>
+        <div class="dropdown-content">
+          <a href="/logout">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Navbar */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1f1a1a;
+    padding: 12px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #4f46e5;
+    margin: 0;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    margin-left: 15px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: 0.3s ease;
+  }
+
+  nav a:hover {
+    background: #e0e7ff;
+    color: #4f46e5;
+  }
+
+  /* Add Prompt button */
+  .add-btn {
+    background: #4f46e5;
+    color: white !important;
+  }
+
+  .add-btn:hover {
+    background: #4338ca;
+  }
+
+  /* Profile Dropdown */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 15px;
+  }
+
+  .profile-btn {
+    background: #f3f4f6;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+  }
+
+  .profile-btn:hover {
+    background: #e5e7eb;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-radius: 6px;
+    min-width: 120px;
+    z-index: 1001;
+  }
+
+  .dropdown-content a {
+    display: block;
+    padding: 10px 14px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+  }
+
+  .dropdown-content a:hover {
+    background: #f3f4f6;
+    color: #4f46e5;
+  }
+
+  .dropdown.show .dropdown-content {
+    display: block;
+  }
+</style>
+
+<script>
+  // Dropdown toggle
+  document.addEventListener("DOMContentLoaded", function () {
+    const profileBtn = document.querySelector(".profile-btn");
+    const dropdown = document.querySelector(".dropdown");
+
+    profileBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      dropdown.classList.toggle("show");
+    });
+
+    // Close dropdown if clicked outside
+    document.addEventListener("click", function () {
+      dropdown.classList.remove("show");
+    });
+  });
+</script>
