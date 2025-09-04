@@ -1,39 +1,30 @@
-AI Prompt Maker – Node.js + Express + Groq AI
-
+📌 AI Prompt Maker – Node.js + Express + Groq AI
 
 An AI-powered prompt generator web app built with Node.js, Express, MongoDB, EJS, and Groq AI (LLaMA models).
 It allows users to sign up, log in, create posts, like posts, and generate improved AI prompts using Groq’s free models.
 
-🔹 Features:
+✨ Features
 
-👤 User Authentication (JWT + Cookies + Bcrypt)
+👤 User Authentication – JWT + Cookies + Bcrypt
 
-📝 Create & Edit Posts
+📝 Create, Edit, and Manage Posts
 
-❤️ Like/Unlike Posts
+❤️ Like / Unlike Posts
 
-🤖 AI Prompt Generator (powered by Groq LLaMA-3.1)
+🤖 AI Prompt Generator (powered by Groq llama-3.1-8b-instant)
 
-🎨 EJS Templates + Bootstrap/Tailwind ready
+🎨 Clean EJS Frontend (Bootstrap/Tailwind ready)
 
-🔐 Secure Login & Profile
+🔐 Secure Authentication & Protected Routes
 
-🚀 Tech Stack:
+🛠️ Tech Stack
 
 Backend: Node.js + Express.js
 
 Database: MongoDB + Mongoose
 
-AI Integration: Groq SDK (llama-3.1-8b-instant model)
+AI Integration: Groq SDK (LLaMA Models)
 
 Templating: EJS
 
 Auth: JWT + Cookies + Bcrypt
-
-⚡ How it works:
-
-Users sign up / log in.
-
-They can add posts, like/unlike posts.
-
-Go to /generate, type a topic → app returns an optimized AI prompt.
