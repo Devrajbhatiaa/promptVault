@@ -1,0 +1,348 @@
+<%- include('head') %>
+<%- include('nav') %>
+<style>
+.gen-wrap { padding: 40px 0 80px; position: relative; z-index: 1; }
+.gen-header { margin-bottom: 32px; }
+.gen-header h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+.gen-header p { color: var(--t2); font-size: 14px; display: flex; align-items: center; gap: 7px; }
+.groq-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; background: rgba(239,159,39,0.12); color: var(--amber); border: 1px solid rgba(239,159,39,0.2); padding: 3px 10px; border-radius: 20px; }
+
+.workspace-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; margin-bottom: 20px; }
+.workspace-toolbar { background: var(--s2); border-bottom: 1px solid var(--border); padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.toolbar-label { font-size: 11px; font-weight: 600; color: var(--t3); letter-spacing: 0.08em; text-transform: uppercase; }
+.textarea-wrap { position: relative; padding: 20px; }
+#userPrompt { width: 100%; min-height: 140px; background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; line-height: 1.8; resize: none; }
+#userPrompt::placeholder { color: var(--t3); }
+.textarea-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--border); }
+.char-count { font-size: 12px; color: var(--t3); font-family: 'DM Mono', monospace; }
+
+.controls-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.control-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--rl); padding: 20px; }
+.control-title { font-size: 12px; font-weight: 600; color: var(--t3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+
+.actions-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+
+/* OUTPUT */
+#outputSection { display: none; }
+#outputSection.visible { display: block; animation: slideUp 350ms ease forwards; }
+.output-card { background: var(--s1); border: 1px solid var(--border-a); border-radius: var(--rl); overflow: hidden; }
+.output-header { background: var(--s2); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+.output-label { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center; gap: 7px; }
+.output-label-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+.output-body { padding: 24px; }
+#resultText { font-family: 'DM Mono', monospace; font-size: 13.5px; line-height: 1.9; color: var(--text); white-space: pre-wrap; }
+.output-footer { padding: 16px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.output-meta { font-size: 12px; color: var(--t3); display: flex; align-items: center; gap: 16px; }
+.output-actions { display: flex; gap: 8px; }
+
+/* SHIMMER */
+.skeleton-wrap { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.sk { height: 14px; border-radius: 6px; }
+.sk-full { width: 100%; }
+.sk-80 { width: 80%; }
+.sk-60 { width: 60%; }
+.sk-90 { width: 90%; }
+.sk-70 { width: 70%; }
+
+/* VERSIONS */
+.version-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.version-pill { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--s3); border: 1px solid var(--border); color: var(--t2); cursor: pointer; transition: all var(--tr); font-family: 'DM Mono', monospace; }
+.version-pill.active { background: rgba(124,92,239,0.15); border-color: rgba(124,92,239,0.3); color: var(--accent); }
+.version-pill:hover { border-color: var(--border-h); color: var(--text); }
+
+@media (max-width: 768px) { .controls-row { grid-template-columns: 1fr; } }
+</style>
+
+<div class="page-wrap">
+  <div class="gen-wrap container-sm">
+
+    <div class="gen-header slide-up">
+      <h1>AI Prompt Generator</h1>
+      <p>
+        <span class="groq-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Groq · LLaMA 3.1
+        </span>
+        Powered by fast AI inference
+      </p>
+    </div>
+
+    <!-- Input workspace -->
+    <div class="workspace-card slide-up stagger-1">
+      <div class="workspace-toolbar">
+        <span class="toolbar-label">Your idea</span>
+        <span class="char-count" id="charCount">0 chars</span>
+      </div>
+      <div class="textarea-wrap">
+        <textarea id="userPrompt" placeholder="Describe what you need a prompt for... e.g. 'a blog post about AI trends in 2025'" data-autoresize></textarea>
+      </div>
+      <div class="textarea-footer">
+        <div class="version-pills" id="versionPills"></div>
+        <button class="btn btn-primary" id="generateBtn" onclick="generatePrompt()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Generate
+        </button>
+      </div>
+    </div>
+
+    <!-- Tone & style controls -->
+    <div class="controls-row slide-up stagger-2">
+      <div class="control-card">
+        <div class="control-title">Tone</div>
+        <div class="seg-control" id="toneControl">
+          <button class="seg-btn active" data-tone="Creative">Creative</button>
+          <button class="seg-btn" data-tone="Professional">Pro</button>
+          <button class="seg-btn" data-tone="Technical">Tech</button>
+          <button class="seg-btn" data-tone="Casual">Casual</button>
+        </div>
+      </div>
+      <div class="control-card">
+        <div class="control-title">Creativity Level</div>
+        <div class="slider-wrap">
+          <span class="slider-label">Low</span>
+          <input type="range" id="creativity" min="0" max="100" value="70" step="1" oninput="document.getElementById('creativityVal').textContent=this.value+'%'"/>
+          <span class="slider-val" id="creativityVal">70%</span>
+        </div>
+        <div style="margin-top:14px;" class="control-title">Length</div>
+        <div class="seg-control" id="lengthControl" style="margin-top:6px;">
+          <button class="seg-btn" data-len="Short">Short</button>
+          <button class="seg-btn active" data-len="Medium">Medium</button>
+          <button class="seg-btn" data-len="Long">Long</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="actions-row slide-up stagger-3">
+      <button class="btn btn-primary" onclick="generatePrompt()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Enhance Prompt
+      </button>
+      <button class="btn btn-ghost" onclick="openSaveModal()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        Save Result
+      </button>
+      <button class="btn btn-ghost" onclick="regenerate()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Regenerate
+      </button>
+    </div>
+
+    <!-- Output -->
+    <div id="outputSection">
+      <div class="output-card">
+        <div class="output-header">
+          <div class="output-label">
+            <div class="output-label-dot" id="outputDot" style="display:none;"></div>
+            <span id="outputLabelText">Enhanced Prompt</span>
+          </div>
+          <div style="display:flex;gap:8px;" id="outputHeaderActions" style="display:none;">
+            <button class="btn btn-ghost btn-sm copy-btn" id="copyBtn" onclick="doCopy()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <!-- Skeleton -->
+        <div class="skeleton-wrap" id="skeleton">
+          <div class="shimmer-bar sk sk-full" style="height:13px;"></div>
+          <div class="shimmer-bar sk sk-90" style="height:13px;"></div>
+          <div class="shimmer-bar sk sk-full" style="height:13px;"></div>
+          <div class="shimmer-bar sk sk-80" style="height:13px;"></div>
+          <div class="shimmer-bar sk sk-70" style="height:13px;"></div>
+          <div class="shimmer-bar sk sk-60" style="height:13px;"></div>
+        </div>
+
+        <!-- Result -->
+        <div class="output-body" id="resultBody" style="display:none;">
+          <div id="resultText"></div>
+        </div>
+
+        <div class="output-footer" id="outputFooter" style="display:none;">
+          <div class="output-meta">
+            <span id="wordCount">— words</span>
+            <span id="readTime">— read</span>
+          </div>
+          <div class="output-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openSaveModal()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              Save
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="regenerate()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              Regenerate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Save Modal -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal">
+    <button class="modal-close" data-modal-close="saveModal">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <h2 style="font-size:20px;font-weight:800;margin-bottom:6px;">Save Prompt</h2>
+    <p style="color:var(--t2);font-size:13px;margin-bottom:24px;">Add this to your prompt library.</p>
+    <form id="saveForm" style="display:flex;flex-direction:column;gap:16px;">
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input type="text" id="saveTitle" class="form-input" placeholder="My awesome prompt..."/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Content</label>
+        <textarea id="saveContent" class="form-textarea" rows="6"></textarea>
+      </div>
+      <button type="button" class="btn btn-primary btn-full" onclick="savePrompt()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        Save to Library
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="/main.js"></script>
+<script>
+let currentResult = '';
+let versionHistory = [];
+let currentTone = 'Creative';
+let currentLength = 'Medium';
+
+// Char count
+const ta = document.getElementById('userPrompt');
+const cc = document.getElementById('charCount');
+ta.addEventListener('input', () => { cc.textContent = ta.value.length + ' chars'; });
+
+// Segmented controls
+document.getElementById('toneControl').addEventListener('click', e => {
+  const btn = e.target.closest('.seg-btn');
+  if (!btn) return;
+  document.querySelectorAll('#toneControl .seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTone = btn.dataset.tone;
+});
+document.getElementById('lengthControl').addEventListener('click', e => {
+  const btn = e.target.closest('.seg-btn');
+  if (!btn) return;
+  document.querySelectorAll('#lengthControl .seg-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentLength = btn.dataset.len;
+});
+
+async function generatePrompt() {
+  const prompt = ta.value.trim();
+  if (!prompt) { showToast('Please describe what you need a prompt for', 'error'); return; }
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span> Generating...`;
+
+  const out = document.getElementById('outputSection');
+  const skel = document.getElementById('skeleton');
+  const resultBody = document.getElementById('resultBody');
+  const outFooter = document.getElementById('outputFooter');
+  const outHeaderActions = document.getElementById('outputHeaderActions');
+  const outDot = document.getElementById('outputDot');
+
+  out.classList.add('visible');
+  skel.style.display = 'flex';
+  resultBody.style.display = 'none';
+  outFooter.style.display = 'none';
+  if (outHeaderActions) outHeaderActions.style.display = 'none';
+  outDot.style.display = 'inline-block';
+
+  try {
+    const res = await fetch('/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userPrompt: prompt })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    currentResult = data.improvedPrompt;
+    versionHistory.push(currentResult);
+
+    document.getElementById('resultText').textContent = currentResult;
+    const words = currentResult.split(/\s+/).length;
+    document.getElementById('wordCount').textContent = words + ' words';
+    document.getElementById('readTime').textContent = Math.ceil(words / 200) + ' min read';
+
+    skel.style.display = 'none';
+    resultBody.style.display = 'block';
+    outFooter.style.display = 'flex';
+    if (outHeaderActions) outHeaderActions.style.display = 'flex';
+    outDot.style.display = 'none';
+
+    // Update version pills
+    const pills = document.getElementById('versionPills');
+    pills.innerHTML = versionHistory.map((_, i) =>
+      `<span class="version-pill ${i === versionHistory.length-1 ? 'active' : ''}" onclick="showVersion(${i})">v${i+1}</span>`
+    ).join('');
+
+    // Auto-fill save modal
+    document.getElementById('saveTitle').value = prompt.slice(0, 60);
+    document.getElementById('saveContent').value = currentResult;
+
+    showToast('Prompt generated!', 'success');
+  } catch (err) {
+    showToast('Generation failed: ' + err.message, 'error');
+    skel.style.display = 'none';
+    outDot.style.display = 'none';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate`;
+}
+
+function showVersion(i) {
+  document.getElementById('resultText').textContent = versionHistory[i];
+  document.querySelectorAll('.version-pill').forEach((p, j) => p.classList.toggle('active', j === i));
+}
+
+function doCopy() {
+  const btn = document.getElementById('copyBtn');
+  copyToClipboard(currentResult, btn);
+}
+
+function regenerate() {
+  if (!ta.value.trim()) { showToast('Add a prompt idea first', 'error'); return; }
+  generatePrompt();
+}
+
+function openSaveModal() {
+  if (!currentResult) { showToast('Generate a prompt first', 'info'); return; }
+  openModal('saveModal');
+}
+
+async function savePrompt() {
+  const title = document.getElementById('saveTitle').value.trim();
+  const content = document.getElementById('saveContent').value.trim();
+  if (!title || !content) { showToast('Please fill in title and content', 'error'); return; }
+  try {
+    const res = await fetch('/post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, content })
+    });
+    if (res.ok || res.redirected) {
+      closeModal('saveModal');
+      showToast('Prompt saved to library!', 'success');
+    } else throw new Error('Save failed');
+  } catch {
+    const form = document.createElement('form');
+    form.method = 'POST'; form.action = '/post';
+    form.innerHTML = `<input name="title" value="${title}"><input name="content" value="${content}">`;
+    document.body.appendChild(form); form.submit();
+  }
+}
+
+// Enter to submit
+ta.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') generatePrompt();
+});
+</script>
+</body></html>

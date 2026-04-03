@@ -1,0 +1,101 @@
+<%- include('head') %>
+<style>
+.landing { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 20px; position: relative; z-index: 1; }
+.landing-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.landing-eyebrow::before, .landing-eyebrow::after { content: ''; flex: 1; max-width: 40px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
+.landing-eyebrow::after { background: linear-gradient(270deg, transparent, var(--accent)); }
+.landing-title { font-size: clamp(48px, 9vw, 100px); font-weight: 800; letter-spacing: -3px; line-height: 1; margin-bottom: 24px; background: linear-gradient(135deg, #fff 30%, var(--accent-h) 70%, #fff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.landing-sub { font-size: 17px; color: var(--t2); max-width: 500px; line-height: 1.7; margin-bottom: 44px; }
+.landing-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+.landing-features { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+.feat-pill { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--t3); font-weight: 500; }
+.feat-pill-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; flex-shrink: 0; }
+
+.landing-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 900px; margin: 80px auto 0; }
+.lcard { background: var(--s1); border: 1px solid var(--border); border-radius: var(--rl); padding: 28px; text-align: left; transition: all var(--tr); }
+.lcard:hover { border-color: var(--border-h); transform: translateY(-4px); }
+.lcard-icon { width: 44px; height: 44px; border-radius: var(--r); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.lcard h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.lcard p { font-size: 13px; color: var(--t2); line-height: 1.7; }
+
+.scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); color: var(--t3); display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; animation: bounce 2s ease-in-out infinite; }
+
+.pub-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: transparent; }
+.pub-nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; letter-spacing: 3px; color: var(--text); text-decoration: none; }
+.pub-nav-logo span { color: var(--accent); }
+.pub-nav-links { display: flex; gap: 8px; }
+
+@media (max-width: 768px) {
+  .landing-cards { grid-template-columns: 1fr; }
+  .pub-nav { padding: 0 20px; }
+}
+</style>
+
+<div style="position:relative;z-index:1;">
+  <nav class="pub-nav">
+    <a class="pub-nav-logo">PROMPT<span>IFY</span></a>
+    <div class="pub-nav-links">
+      <a href="/login" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="/signin" class="btn btn-primary btn-sm">Get Started</a>
+    </div>
+  </nav>
+
+  <div class="landing" style="padding-top:80px;">
+    <div class="landing-eyebrow slide-up">AI-Powered Prompt Engineering</div>
+
+    <h1 class="landing-title slide-up stagger-1">PROMPTIFY</h1>
+
+    <p class="landing-sub slide-up stagger-2">
+      Enhance your prompts with AI-powered suggestions, save your best work, and collaborate with the community.
+    </p>
+
+    <div class="landing-ctas slide-up stagger-3">
+      <a href="/signin" class="btn btn-primary btn-lg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Get Started Free
+      </a>
+      <a href="/trending" class="btn btn-ghost btn-lg">Explore Trending</a>
+    </div>
+
+    <div class="landing-features slide-up stagger-4">
+      <a href="/communities" class="feat-pill"><div class="feat-pill-dot"></div>Join Communities</a>
+      <div class="feat-pill"><div class="feat-pill-dot"></div>Groq LLaMA 3.1 AI</div>
+      <div class="feat-pill"><div class="feat-pill-dot"></div>Save & Manage Prompts</div>
+      <div class="feat-pill"><div class="feat-pill-dot"></div>Community Likes</div>
+      <div class="feat-pill"><div class="feat-pill-dot"></div>Free Forever</div>
+    </div>
+
+    <div class="landing-cards">
+      <div class="lcard slide-up stagger-2">
+        <div class="lcard-icon" style="background:rgba(124,92,239,0.12);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C5CEF" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h3>AI Enhancement</h3>
+        <p>Transform basic ideas into powerful, detailed prompts using Groq's fast LLaMA models.</p>
+      </div>
+      <div class="lcard slide-up stagger-3">
+        <div class="lcard-icon" style="background:rgba(29,158,117,0.12);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+        </div>
+        <h3>Save & Organize</h3>
+        <p>Build your personal prompt library. Edit, update, and manage all your prompts in one place.</p>
+      </div>
+      <div class="lcard slide-up stagger-4">
+        <div class="lcard-icon" style="background:rgba(239,159,39,0.12);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EF9F27" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </div>
+        <h3>Community Likes</h3>
+        <p>Discover trending prompts, like your favorites, and share inspiration with other creators.</p>
+      </div>
+    </div>
+
+    <div class="scroll-hint" style="position:relative;margin-top:60px;bottom:auto;left:auto;transform:none;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      <span>Explore</span>
+    </div>
+  </div>
+</div>
+
+<script src="/main.js"></script>
+</body>
+</html>

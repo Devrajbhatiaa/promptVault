@@ -1,0 +1,98 @@
+<%- include('head') %>
+<%- include('nav') %>
+<style>
+.trending-page { padding: 40px 0 80px; position: relative; z-index: 1; }
+.trending-header { margin-bottom: 32px; }
+.trending-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+.trending-header p { color: var(--t2); font-size: 15px; }
+.filters-row { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.filter-btn { padding: 8px 16px; border-radius: 20px; background: var(--s1); border: 1px solid var(--border); color: var(--t2); font-size: 13px; cursor: pointer; transition: all var(--tr); }
+.filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(124,92,239,0.1); }
+.prompts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.prompt-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--rl); padding: 22px; transition: all var(--tr); text-decoration: none; color: inherit; display: block; }
+.prompt-card:hover { border-color: var(--border-h); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.prompt-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.prompt-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-h)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; }
+.prompt-meta { flex: 1; }
+.prompt-author { font-size: 14px; font-weight: 600; }
+.prompt-date { font-size: 12px; color: var(--t3); }
+.prompt-card-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
+.prompt-card-content { font-size: 13px; color: var(--t2); line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; }
+.prompt-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--border); }
+.prompt-stats { display: flex; gap: 16px; font-size: 13px; color: var(--t3); }
+.prompt-stats span { display: flex; align-items: center; gap: 5px; }
+.prompt-stats svg { width: 14px; height: 14px; }
+.trending-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: rgba(239,159,39,0.15); color: var(--amber); border-radius: 20px; font-size: 11px; font-weight: 600; }
+.category-tag { display: inline-flex; padding: 4px 10px; background: var(--s2); border-radius: 12px; font-size: 11px; color: var(--t2); text-transform: capitalize; }
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-state svg { width: 56px; height: 56px; color: var(--t3); margin-bottom: 16px; }
+</style>
+
+<div class="page-wrap">
+  <div class="trending-page container">
+    <div class="trending-header slide-up">
+      <h1>Trending Prompts</h1>
+      <p>Discover the most popular prompts from the community.</p>
+    </div>
+
+    <div class="filters-row slide-up stagger-1">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Writing</button>
+      <button class="filter-btn">Coding</button>
+      <button class="filter-btn">Design</button>
+      <button class="filter-btn">Marketing</button>
+      <button class="filter-btn">Education</button>
+    </div>
+
+    <% if (posts.length === 0) { %>
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        <h3>No prompts yet</h3>
+        <p>Be the first to share a prompt!</p>
+        <% if (user) { %>
+          <a href="/post" class="btn btn-primary" style="margin-top:16px;">Create Prompt</a>
+        <% } %>
+      </div>
+    <% } else { %>
+      <div class="prompts-grid">
+        <% posts.forEach(function(post, index) { %>
+          <a href="/post/view/<%= post._id %>" class="prompt-card slide-up" style="animation-delay: <%= index * 50 %>ms;">
+            <div class="prompt-card-header">
+              <div class="prompt-avatar"><%= post.author?.name?.charAt(0).toUpperCase() || 'U' %></div>
+              <div class="prompt-meta">
+                <div class="prompt-author"><%= post.author?.name || 'Unknown' %></div>
+                <div class="prompt-date"><%= new Date(post.createdAt).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) %></div>
+              </div>
+              <% if (post.trendingScore > 5) { %>
+                <span class="trending-badge">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  Trending
+                </span>
+              <% } %>
+            </div>
+            <div class="prompt-card-title"><%= post.title %></div>
+            <div class="prompt-card-content"><%= post.content %></div>
+            <div class="prompt-card-footer">
+              <div class="prompt-stats">
+                <span>
+                  <svg viewBox="0 0 24 24" fill="<%= user && post.likes && post.likes.map(String).includes(String(user?._id)) ? 'currentColor' : 'none' %>" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                  <%= post.likes?.length || 0 %>
+                </span>
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                  <%= post.views || 0 %>
+                </span>
+              </div>
+              <% if (post.category) { %>
+                <span class="category-tag"><%= post.category %></span>
+              <% } %>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script src="/main.js"></script>
+</body></html>

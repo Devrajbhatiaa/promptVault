@@ -1,0 +1,121 @@
+<%- include('head') %>
+<%- include('nav') %>
+<style>
+.comm-detail { padding: 40px 0 80px; position: relative; z-index: 1; }
+.comm-header { background: var(--s1); border: 1px solid var(--border); border-radius: var(--rl); padding: 32px; margin-bottom: 32px; }
+.comm-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.comm-icon-lg { width: 72px; height: 72px; border-radius: var(--rl); background: linear-gradient(135deg, var(--accent), var(--accent-h)); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; color: white; flex-shrink: 0; }
+.comm-info h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+.comm-meta { display: flex; gap: 20px; color: var(--t2); font-size: 14px; margin-bottom: 12px; }
+.comm-desc { color: var(--t2); line-height: 1.7; max-width: 600px; }
+.comm-actions { display: flex; gap: 10px; }
+.join-link-box { background: var(--s2); border: 1px solid var(--border); border-radius: var(--r); padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+.join-link-box input { background: transparent; border: none; color: var(--accent); font-family: 'DM Mono', monospace; font-size: 13px; width: 200px; }
+.copy-btn { background: none; border: none; color: var(--t3); cursor: pointer; padding: 4px; }
+.copy-btn:hover { color: var(--text); }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.section-header h2 { font-size: 18px; font-weight: 700; }
+.prompts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.prompt-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--rl); padding: 20px; transition: all var(--tr); cursor: pointer; }
+.prompt-card:hover { border-color: var(--border-h); transform: translateY(-2px); }
+.prompt-card-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.prompt-card-content { font-size: 13px; color: var(--t2); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.prompt-card-meta { display: flex; align-items: center; gap: 16px; margin-top: 14px; font-size: 12px; color: var(--t3); }
+.prompt-card-meta span { display: flex; align-items: center; gap: 4px; }
+</style>
+
+<div class="page-wrap">
+  <div class="comm-detail container">
+    <div class="comm-header slide-up">
+      <div class="comm-header-top">
+        <div style="display:flex;align-items:center;gap:20px;">
+          <div class="comm-icon-lg"><%= community.name.charAt(0).toUpperCase() %></div>
+          <div class="comm-info">
+            <h1><%= community.name %></h1>
+            <div class="comm-meta">
+              <span><%= community.memberCount %> members</span>
+              <span><%= posts.length %> prompts</span>
+              <span>Created by <%= community.creator?.name || 'Unknown' %></span>
+            </div>
+          </div>
+        </div>
+        <div class="comm-actions">
+          <% if (user && !isMember) { %>
+            <form action="/community/<%= community._id %>/join" method="POST">
+              <button type="submit" class="btn btn-primary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                Join Community
+              </button>
+            </form>
+          <% } else if (user && isMember) { %>
+            <form action="/community/<%= community._id %>/leave" method="POST">
+              <button type="submit" class="btn btn-ghost">Leave</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+      <% if (community.description) { %>
+        <p class="comm-desc"><%= community.description %></p>
+      <% } %>
+      <div class="join-link-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        <input type="text" value="<%= process.env.CLIENT_URL || 'http://localhost:5033' %>/community/join/<%= community.joinLink %>" readonly id="joinLink"/>
+        <button class="copy-btn" onclick="copyJoinLink()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>Prompts in this Community</h2>
+      <% if (isMember) { %>
+        <a href="/post?communityId=<%= community._id %>" class="btn btn-primary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Prompt
+        </a>
+      <% } %>
+    </div>
+
+    <% if (posts.length === 0) { %>
+      <div class="empty-state card" style="text-align:center;padding:48px;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--t3);margin-bottom:12px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <h3 style="font-size:18px;margin-bottom:8px;">No prompts yet</h3>
+        <p style="color:var(--t2);font-size:14px;">Be the first to share a prompt in this community!</p>
+        <% if (isMember) { %>
+          <a href="/post?communityId=<%= community._id %>" class="btn btn-primary" style="margin-top:16px;">Add First Prompt</a>
+        <% } %>
+      </div>
+    <% } else { %>
+      <div class="prompts-grid">
+        <% posts.forEach(function(post) { %>
+          <a href="/post/view/<%= post._id %>" class="prompt-card">
+            <div class="prompt-card-title"><%= post.title %></div>
+            <div class="prompt-card-content"><%= post.content %></div>
+            <div class="prompt-card-meta">
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+                <%= post.likes?.length || 0 %>
+              </span>
+              <span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                <%= post.views || 0 %>
+              </span>
+              <span>by <%= post.author?.name || 'Unknown' %></span>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script src="/main.js"></script>
+<script>
+function copyJoinLink() {
+  const input = document.getElementById('joinLink');
+  input.select();
+  document.execCommand('copy');
+  showToast('Link copied to clipboard!', 'success');
+}
+</script>
+</body></html>

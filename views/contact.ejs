@@ -1,0 +1,126 @@
+<%- include('head') %>
+<%- include('nav') %>
+<style>
+.contact-page { padding: 60px 0 80px; position: relative; z-index: 1; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 32px; align-items: start; }
+.contact-info h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; line-height: 1.2; }
+.contact-info p { color: var(--t2); font-size: 15px; line-height: 1.7; margin-bottom: 36px; }
+.contact-links { display: flex; flex-direction: column; gap: 16px; }
+.contact-link { display: flex; align-items: center; gap: 14px; padding: 16px 18px; background: var(--s1); border: 1px solid var(--border); border-radius: var(--rl); transition: all var(--tr); text-decoration: none; }
+.contact-link:hover { border-color: var(--border-h); transform: translateX(4px); }
+.contact-link-icon { width: 40px; height: 40px; border-radius: var(--r); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.contact-link-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.contact-link-sub { font-size: 12px; color: var(--t3); }
+
+.contact-form-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--rx); padding: 36px; }
+.contact-form-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.contact-form-card .sub { color: var(--t2); font-size: 13px; margin-bottom: 28px; }
+.contact-form { display: flex; flex-direction: column; gap: 18px; }
+
+.success-state { text-align: center; padding: 40px 20px; display: none; }
+.success-icon { width: 60px; height: 60px; background: var(--green-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--green); }
+.success-state h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.success-state p { color: var(--t2); font-size: 14px; }
+
+@media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+</style>
+
+<div class="page-wrap">
+  <div class="contact-page container" style="max-width:900px;">
+    <div class="contact-grid">
+      <div class="slide-up">
+        <h1>Get in Touch</h1>
+        <p>Have a question, feedback, or just want to say hello? We'd love to hear from you.</p>
+        <div class="contact-links">
+          <div class="contact-link">
+            <div class="contact-link-icon" style="background:rgba(124,92,239,0.12);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C5CEF" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="contact-link-title">Email Us</div>
+              <div class="contact-link-sub">We reply within 24 hours</div>
+            </div>
+          </div>
+          <div class="contact-link">
+            <div class="contact-link-icon" style="background:rgba(29,158,117,0.12);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div>
+              <div class="contact-link-title">Feature Requests</div>
+              <div class="contact-link-sub">Share ideas to improve Promptify</div>
+            </div>
+          </div>
+          <div class="contact-link">
+            <div class="contact-link-icon" style="background:rgba(239,159,39,0.12);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF9F27" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+              <div class="contact-link-title">Support</div>
+              <div class="contact-link-sub">Need help? We're here</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-card slide-up stagger-2">
+        <h2>Send a Message</h2>
+        <p class="sub">Fill out the form and we'll get back to you shortly.</p>
+
+        <div id="successState" class="success-state">
+          <div class="success-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3>Message Sent!</h3>
+          <p>Thanks for reaching out. We'll get back to you within 24 hours.</p>
+        </div>
+
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label class="form-label">Your Name</label>
+            <input type="text" id="cname" class="form-input" placeholder="Alex Johnson" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="cemail" class="form-input" placeholder="you@example.com" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea id="cmessage" class="form-textarea" style="min-height:140px;" placeholder="Tell us what's on your mind..." required></textarea>
+          </div>
+          <button type="button" class="btn btn-primary btn-full" onclick="sendContact()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/main.js"></script>
+<script>
+async function sendContact() {
+  const name = document.getElementById('cname').value.trim();
+  const email = document.getElementById('cemail').value.trim();
+  const message = document.getElementById('cmessage').value.trim();
+  if (!name || !email || !message) { showToast('Please fill in all fields', 'error'); return; }
+  try {
+    const res = await fetch('/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, message })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      document.getElementById('contactForm').style.display = 'none';
+      const ss = document.getElementById('successState');
+      ss.style.display = 'block';
+      ss.classList.add('scale-in');
+      showToast('Message sent successfully!', 'success');
+    } else throw new Error(data.error || 'Failed');
+  } catch (e) {
+    showToast('Failed to send message. Please try again.', 'error');
+  }
+}
+</script>
+</body></html>
